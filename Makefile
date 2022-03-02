@@ -1,7 +1,6 @@
-output: caso1.o
-	g++ caso1.o -o main 
-caso1.o: caso1.cpp
-	g++ -c caso1.cpp
+output: quiz1y2.o
+	g++ quiz1y2.o -o main 
+quiz1y2.o: quiz1y2.cpp
+	g++ -c quiz1y2.cpp
 
-clean:
-	rm *.o main
+
