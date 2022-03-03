@@ -4,9 +4,19 @@
 
 using namespace std;
 
+/*
+Instituto Tecnologico de Costa Rica
+Analisis de Algoritmos
 
+Prof. Rodrigo Nunez, Quiz #1 y #2
+Estudiante: Kevin Josue Cubillo Chacon
+
+*/
+
+/*Class Media. This class is used to instantiate the different types of media that
+  digital news can have, such as videos, images or audios
+*/
 class Media{
-
 private:
     int tipo;
     string descripcion;
@@ -16,20 +26,20 @@ private:
 
 public:
 
-    Media(int tipo=0, string descripcion="", string fecha ="", string autor =""){ // tipo 0 IMAGEN
+    Media(int tipo=0, string descripcion="", string fecha ="", string autor =""){ // type 0 IMAGE
         this->tipo = tipo;
         this->descripcion = descripcion;
         this->fecha = fecha;
         this->autor = autor ;
     }
-    Media (int tipo = 1, string descripcion ="", string fecha ="", int duracion =0){ //tipo 1 VIDEO
+    Media (int tipo = 1, string descripcion ="", string fecha ="", int duracion =0){ //type 1 VIDEO
         this->tipo = tipo;
         this->descripcion = descripcion;
         this->fecha = fecha;
         this->duracion = duracion;
 
     }
-    Media (int tipo = 2, string descripcion ="", int duracion =0, string autor =""){ //tipo 2 AUDIO
+    Media (int tipo = 2, string descripcion ="", int duracion =0, string autor =""){ //type 2 AUDIO
         this->tipo = tipo;
         this->descripcion = descripcion;
         this->duracion = duracion;
@@ -37,53 +47,53 @@ public:
 
     }
 
-    string getInfo(){
+    string getInfo(){ // Returns the information of the media depending on the type.
 
         string contenido;
-        if (tipo == 0){
+        if (tipo == 0){ //image
            return "\nTipo: Imagen\n     _\n  n_|_|_,__    \n |===.-.===|    \n |  ((_))  |    \n '==='-'==='\n\nDescripcion: "+
-           descripcion+"\nFecha: "+fecha+"\nFotografo"+autor;
+           descripcion+"\nFecha: "+fecha+"\nFotografo: "+autor;
 
         }
-        if (tipo == 1){
-            return "\nTipo: Video\n  _______________       \n |    .          |       \n |    :;..       |       \n |    :;;;;;.    |       \n |    ;;;:'      |       \n |    ;:'        |       \n |_______________|\n\nDescripcion"
+        if (tipo == 1){ //video
+            return "\nTipo: Video\n  _______________       \n |    .          |       \n |    :;..       |       \n |    :;;;;;.    |       \n |    ;;;:'      |       \n |    ;:'        |       \n |_______________|\n\nDescripcion: "
             +descripcion+"\nFecha: "+fecha+"\nDuracion: "+to_string(duracion)+" segundos";
 
         }
-        if (tipo == 2){
+        if (tipo == 2){ //audio
            return "\nTipo: Audio\n      ;\n      ;;\n      ;';.\n      ;  ;;\n      ;   ;;\n      ;    ;;\n      ;    ;;\n      ;   ;'\n      ;  ' \n ,;;;,; \n ;;;;;;\n `;;;;'\n\nDescripcion: "+
-           descripcion+"\nDuracion: "+to_string(duracion)+"\nAutor: "+autor;
+           descripcion+"\nDuracion: "+to_string(duracion)+" segundos\nAutor: "+autor;
         }
         return "Noticia vacia";
 
     }
 };
 
-
+//Class Noticia.  This class is father of  NoticiaPaper, NoticiaDigital and NoticiaRadio
 class Noticia {
 
 protected:
-    string title;
+    string Titulo;
     string date;
     string reporter;
 
 
 public:
 
-    Noticia(string title, string date, string reporter){
-        this->title = title;
+    Noticia(string Titulo, string date, string reporter){ //constructor
+        this->Titulo = Titulo;
         this->date = date;
         this->reporter = reporter;
     }
 
-   ~Noticia(){
+   ~Noticia(){}
 
-   }
-
-   virtual string getInfo() = 0;
+   virtual string getInfo() = 0; //abstract method
 
 };
 
+
+//Class NoticiaPaper. Inherited from Noticia
 class NoticiaPaper: public Noticia {
 
 private:
@@ -91,16 +101,19 @@ private:
 
 public:
 
-    NoticiaPaper(string title, string date, string reporter, string path): Noticia(title, date, reporter){
+    NoticiaPaper(string Titulo, string date, string reporter, string path): Noticia(Titulo, date, reporter){ //constructor
         this->path = path;
     }
 
+    ~NoticiaPaper(){}
+
     string getInfo(){
-      return"Title: "+ title+"\nDate: "+date+"\nReporter: "+reporter+"\nImage Path: "+this->path+"\n";
+      return"Titulo: "+ Titulo+"\nFecha: "+date+"\nReportero: "+reporter+"\nRuta de la imagen: "+this->path+"\n";
     }
 
 };
 
+//Class NoticiaDigital. Inherited from Noticia
 class NoticiaDigital: public Noticia {
 
 private:
@@ -109,36 +122,38 @@ private:
 
 public:
 
-    NoticiaDigital(string title, string date, string reporter, vector<Media*> listMedia): Noticia(title, date, reporter){
+    NoticiaDigital(string Titulo, string date, string reporter, vector<Media*> listMedia): Noticia(Titulo, date, reporter){
         this->listMedia = listMedia;
     }
 
-   // void addMedia(Media media){
-       // listMedia.emplace_back(media);
-
-    //}
+    ~NoticiaDigital(){}
 
     string getInfo(){
         string listInfo;
-        for (int pos = 0; pos<3; pos++){
+        for (int pos = 0; pos<listMedia.size(); pos++){
             listInfo = listInfo + listMedia[pos]->getInfo()+"\n\n";
         }
-        return "Title: "+ title+"\nDate: "+date+"\nReporter: "+reporter+"\n\nMedia: \n"+listInfo+"\n";
+        return "Titulo: "+ Titulo+"\nFecha: "+date+"\nReportero: "+reporter+"\n\nMedia: \n"+listInfo;
 
     }
 
 };
 
+
+//Class NoticiaRadio. Inherited from Noticia
 class NoticiaRadio: public Noticia {
 
 private:
     string audioURL;
 public:
-    NoticiaRadio(string title, string date, string reporter, string audioURL): Noticia(title, date, reporter){
+    NoticiaRadio(string Titulo, string date, string reporter, string audioURL): Noticia(Titulo, date, reporter){
         this->audioURL = audioURL;
     }
+
+    ~NoticiaRadio(){}
+
     string getInfo(){
-        return "Title: "+ title+"\nDate: "+date+"\nReporter: "+reporter+"\nAudio URL: "+this->audioURL+"\n";
+        return "Titulo: "+ Titulo+"\nFecha: "+date+"\nReportero: "+reporter+"\nAudio URL: "+this->audioURL+"\n";
     }
 
 };
@@ -146,13 +161,18 @@ public:
 
 int main(){
 
+    //Media vector. Containing an image, a video and an audio
     vector<Media*> media = {new Media(0,"Imagen de un avion","03/02/2021","Carlos Rodriguez"), new Media(1,"Video del piloto derribando un caza","04/01/2022",86),
     new Media(2,"LLamada del piloto con la base de control", 21, "Ejercito de Ucrania")};
 
-    vector<Noticia*> noticias = {new NoticiaPaper("Vaticano pide paz en Ucrania","05/03/2022","Mario Torres","C:\notice\actual\vaticano.png"),
+    //Noticia vector. contsins 3 types of Noticia.
+    vector<Noticia*> noticias = {new NoticiaPaper("Vaticano pide paz en Ucrania","05/03/2022","Mario Torres","D:/notice/actual/vaticano.png"),
                                  new NoticiaDigital("Piloto ucraniano derriba 15 aviones rusos","15/02/2022","Pedro Flores Brenes", media),
                                  new NoticiaRadio("Nuevo caso de corrupcion en Munucipalidad de Alajuela","05/11/2019","Carmen Castro Obando","http://radiomonumental/casodecorrupcion")};
 
+
+
+    // We go through the vector and show the information of the 3 news by polymorphism
     for (int i = 0; i<3; i++){
         cout<<noticias[i]->getInfo();
         cout<<"\n==================================================\n\n";
